@@ -62,6 +62,14 @@
 
 
 - (void) addTask {
+    if([_nameTextField.text isEqual: @""]){
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle: @"Fail" message: @"Name shouldn't be empty" preferredStyle: UIAlertControllerStyleAlert];
+        UIAlertAction *okButton = [UIAlertAction actionWithTitle: @"OK" style: UIAlertActionStyleCancel handler: nil];
+        [alert addAction: okButton];
+        [self presentViewController: alert animated: YES completion:nil];
+        return;
+    }
+    
     Task *task = [[Task alloc] initWithUUID:[[NSUUID UUID] UUIDString]
                                        name: _nameTextField.text
                                 description: _descriptionTextField.text
@@ -76,9 +84,18 @@
 }
 
 - (void) editTask {
+    if([_nameTextField.text isEqual: @""]){
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle: @"Fail" message: @"Name shouldn't be empty" preferredStyle: UIAlertControllerStyleAlert];
+        UIAlertAction *okButton = [UIAlertAction actionWithTitle: @"OK" style: UIAlertActionStyleCancel handler: nil];
+        [alert addAction: okButton];
+        [self presentViewController: alert animated: YES completion:nil];
+        _nameTextField.text = _taskDetails.name;
+        return;
+    }
+    
     _taskDetails.name = _nameTextField.text;
     _taskDetails.desc = _descriptionTextField.text;
-    _taskDetails.imageName = @"plus";
+    _taskDetails.imageName = @"calendar";
     _taskDetails.date = _datePicker.date;
     _taskDetails.priority = (int)_prioritySegment.selectedSegmentIndex;
     _taskDetails.status = (int)_statusSegment.selectedSegmentIndex;

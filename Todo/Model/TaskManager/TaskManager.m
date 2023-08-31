@@ -13,7 +13,6 @@
 // MARK: - Private
 - (void) save {
     NSData *tasksData = [NSKeyedArchiver archivedDataWithRootObject: tasks];
-    [userDefaults setObject: nil forKey: @"tasks"];
     [userDefaults setObject: tasksData forKey: @"tasks"];
 }
 
@@ -24,7 +23,6 @@
     if(tasks == nil) {
         tasks = [NSMutableArray new];
     }
-//    NSLog(@"Retrieve: %@", tasks);
 }
 
 - (void) addPriorityToStatus: (Priority*) priority status: (int) status {
@@ -85,7 +83,7 @@
 
 - (void) insertTask: (Task*) task {
     [self retrieve];
-    NSLog(@"insertTask: %@", task);
+//    NSLog(@"insertTask: %@", task);
     [tasks addObject: task];
     [self save];
 }
@@ -99,6 +97,9 @@
             break;
         }
         i++;
+    }
+    
+    if(i < tasks.count){
     }
     
     [tasks replaceObjectAtIndex: i withObject: task];

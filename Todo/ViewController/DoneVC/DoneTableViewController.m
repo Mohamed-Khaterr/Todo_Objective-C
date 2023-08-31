@@ -50,6 +50,11 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if((int)_taskManager.done.all.count == 0){
+        return 1;
+    }
+    
+    
     if(_isSorted) {
         switch(section) {
             case 0:
@@ -69,6 +74,11 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle: UITableViewCellStyleSubtitle reuseIdentifier: @"myCell"];
+    
+    if((int)_taskManager.done.all.count == 0){
+        cell.textLabel.text = @"No Tasks finished!";
+        return cell;
+    }
     
     if(_isSorted){
         Task *task;
@@ -101,15 +111,46 @@
 
 // MARK: - UITableView Delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if((int)_taskManager.done.all.count == 0){
+        [tableView deselectRowAtIndexPath: indexPath animated:YES];
+        return;
+    }
+    
     DetailsViewController *detailsVC = [self.storyboard instantiateViewControllerWithIdentifier: @"DetailsViewController"];
     detailsVC.perform = DetailsVCShowOnly;
-    detailsVC.taskDetails = _taskManager.done.all[indexPath.row];
+    if(_isSorted){
+        switch(indexPath.section) {
+            case 0:
+                detailsVC.taskDetails = _taskManager.done.low[indexPath.row];
+                break;
+            case 1:
+                detailsVC.taskDetails = _taskManager.done.medium[indexPath.row];
+                break;
+            case 2:
+                detailsVC.taskDetails = _taskManager.done.high[indexPath.row];
+                break;
+        }
+        detailsVC.disappleTodo = YES;
+    } else {
+        detailsVC.taskDetails = _taskManager.done.all[indexPath.row];
+        detailsVC.disappleTodo = YES;
+    }
+    
     [self.navigationController pushViewController: detailsVC animated: YES];
     [tableView deselectRowAtIndexPath: indexPath animated: YES];
 }
 
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if((int)_taskManager.done.all.count == 0){
+        [tableView deselectRowAtIndexPath: indexPath animated:YES];
+        return;
+    }
+    
+    if (editingStyle != UITableViewCellEditingStyleDelete) {
+        return;
+    }
+    
     UIAlertController *alert = [UIAlertController alertControllerWithTitle: @"Delete" message: @"Are you sure to delete!" preferredStyle: UIAlertControllerStyleAlert];
     
     UIAlertAction *cancelButton = [UIAlertAction actionWithTitle: @"Cancel" style: UIAlertActionStyleCancel handler:nil];

@@ -13,7 +13,7 @@
 
 @property UISearchBar *searchBar;
 
-@property TaskManager *taskManagerUpdate;
+@property TaskManager *taskManager;
 
 @property bool isSearching;
 @property NSArray<Task*> *searchResult;
@@ -36,12 +36,12 @@
     
     [self setupSearchBar];
     
-    _taskManagerUpdate = [TaskManager new];
+    _taskManager = [TaskManager new];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
-    [_taskManagerUpdate fetchTasksByStatus: 0];
+    [_taskManager fetchTasksByStatus: 0];
     [self.tableView reloadData];
 }
 
@@ -49,7 +49,7 @@
 // MARK: - SearchBar
 - (void) setupSearchBar {
     _searchBar = [UISearchBar new];
-    _searchBar.placeholder = @"Search...";
+    _searchBar.placeholder = @"Search by name...";
     _searchBar.delegate = self;
     self.navigationItem.titleView = _searchBar;
     _isSearching = NO;
@@ -74,10 +74,13 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if((int)_taskManager.todo.all.count == 0){
+        return 1;
+    }
     if(_isSearching){
         return _searchResult.count == 0 ? 1 : _searchResult.count;
     } else {
-        return _taskManagerUpdate.todo.all.count;
+        return _taskManager.todo.all.count;
     }
 }
 
@@ -85,7 +88,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle: UITableViewCellStyleSubtitle reuseIdentifier: @"myCell"];
     
-    if(_taskManagerUpdate.todo.all.count == 0){
+    if((int)_taskManager.todo.all.count == 0){
         cell.textLabel.text = @"No Taskes in TODOS!";
         return cell;
     }
@@ -101,7 +104,7 @@
         return cell;
     }
     
-    Task *task = _taskManagerUpdate.todo.all[indexPath.row];
+    Task *task = _taskManager.todo.all[indexPath.row];
     cell.textLabel.text = task.name;
     
     switch(task.priority) {
@@ -126,26 +129,34 @@
 
 // MARK: - UITableView Delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if((int)_taskManager.todo.all.count == 0){
+        [tableView deselectRowAtIndexPath: indexPath animated:YES];
+        return;
+    }
     DetailsViewController *detailsVC = [self.storyboard instantiateViewControllerWithIdentifier: @"DetailsViewController"];
     detailsVC.perform = DetailsVCEdit;
-    detailsVC.taskDetails = _taskManagerUpdate.todo.all[indexPath.row];
+    detailsVC.taskDetails = _taskManager.todo.all[indexPath.row];
     [self.navigationController pushViewController: detailsVC animated: YES];
 }
 
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if((int)_taskManager.todo.all.count == 0){
+        return;
+    }
+    
     if (editingStyle != UITableViewCellEditingStyleDelete) {
         return;
     }
     
-    Task* task = _taskManagerUpdate.todo.all[indexPath.row];
+    Task* task = _taskManager.todo.all[indexPath.row];
     
     UIAlertController *alert = [UIAlertController alertControllerWithTitle: @"Delete" message: @"Are you sure to delete!" preferredStyle: UIAlertControllerStyleAlert];
     
     UIAlertAction *cancelButton = [UIAlertAction actionWithTitle: @"Cancel" style: UIAlertActionStyleCancel handler:nil];
     UIAlertAction *deleteButton = [UIAlertAction actionWithTitle: @"Delete" style: UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-        [self.taskManagerUpdate deletaTaskWithUUID: task.uuid];
-        [self.taskManagerUpdate fetchTasksByStatus: 0];
+        [self.taskManager deletaTaskWithUUID: task.uuid];
+        [self.taskManager fetchTasksByStatus: 0];
         [self.tableView reloadData];
     }];
     
@@ -159,12 +170,12 @@
 // MARK: - SearchBar Delegate
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if([searchText isEqual: @""]) {
-        [_taskManagerUpdate fetchTasksByStatus: 0];
+        [_taskManager fetchTasksByStatus: 0];
         _isSearching = NO;
     } else {
         _isSearching = YES;
         NSPredicate *predicate = [NSPredicate predicateWithFormat: @"name CONTAINS[c] %@", searchText];
-        _searchResult = [_taskManagerUpdate.todo.all filteredArrayUsingPredicate: predicate];
+        _searchResult = [_taskManager.todo.all filteredArrayUsingPredicate: predicate];
     }
     [self.tableView reloadData];
 }
@@ -180,7 +191,7 @@
     [searchBar.searchTextField endEditing: YES];
     _isSearching = NO;
     searchBar.searchTextField.text = @"";
-    [_taskManagerUpdate fetchTasksByStatus: 0];
+    [_taskManager fetchTasksByStatus: 0];
     [self.tableView reloadData];
 }
 
