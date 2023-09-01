@@ -8,6 +8,7 @@
 #import "TodoTableViewController.h"
 #import "DetailsViewController.h"
 #import "TaskManager.h"
+#import "NSArray+EmptyArray.h"
 
 @interface TodoTableViewController () <UISearchBarDelegate>
 
@@ -74,13 +75,10 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if(_taskManager.todo.allPriorities.count == 0){
-        return 1;
-    }
     if(_isSearching){
-        return _searchResult.count == 0 ? 1 : _searchResult.count;
+        return _searchResult.isEmpty ? 1 : _searchResult.count;
     } else {
-        return _taskManager.todo.allPriorities.count;
+        return _taskManager.todo.allPriorities.isEmpty ? 1 : _taskManager.todo.allPriorities.count;
     }
 }
 
@@ -88,39 +86,37 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle: UITableViewCellStyleSubtitle reuseIdentifier: @"myCell"];
     
-    if(_taskManager.todo.allPriorities.count == 0){
-        cell.textLabel.text = @"No Taskes in TODOS!";
-        return cell;
-    }
-    
     if(_isSearching){
-        if(_searchResult.count == 0){
+        if(_searchResult.isEmpty){
             cell.textLabel.text = @"No Results!";
         } else {
             cell.textLabel.text = _searchResult[indexPath.row].name;
             cell.detailTextLabel.text = _searchResult[indexPath.row].desc;
             cell.imageView.image = [UIImage systemImageNamed: _searchResult[indexPath.row].imageName];
         }
-        return cell;
-    }
-    
-    Task *task = _taskManager.todo.allPriorities[indexPath.row];
-    cell.textLabel.text = task.name;
-    
-    switch(task.priority) {
-        case 0:
-            cell.textLabel.textColor = [UIColor systemGreenColor];
-            break;
-        case 1:
-            cell.textLabel.textColor = [UIColor blueColor];
-            break;
+    } else {
+        if(_taskManager.todo.allPriorities.isEmpty){
+            cell.textLabel.text = @"No Taskes in TODOS!";
+        } else {
+            Task *task = _taskManager.todo.allPriorities[indexPath.row];
             
-        case 2:
-            cell.textLabel.textColor = [UIColor redColor];
+            switch(task.priority) {
+                case 0:
+                    cell.textLabel.textColor = [UIColor systemGreenColor];
+                    break;
+                case 1:
+                    cell.textLabel.textColor = [UIColor blueColor];
+                    break;
+                    
+                case 2:
+                    cell.textLabel.textColor = [UIColor redColor];
+            }
+            
+            cell.textLabel.text = task.name;
+            cell.detailTextLabel.text = task.desc;
+            cell.imageView.image = [UIImage systemImageNamed: task.imageName];
+        }
     }
-    
-    cell.detailTextLabel.text = task.desc;
-    cell.imageView.image = [UIImage systemImageNamed: task.imageName];
     
     return cell;
 }
@@ -129,23 +125,19 @@
 
 // MARK: - UITableView Delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if(_taskManager.todo.allPriorities.count == 0){
+    if(_taskManager.todo.allPriorities.isEmpty){
         [tableView deselectRowAtIndexPath: indexPath animated:YES];
-        return;
+    } else {
+        DetailsViewController *detailsVC = [self.storyboard instantiateViewControllerWithIdentifier: @"DetailsViewController"];
+        detailsVC.presentAs = DetailsVCEdit;
+        detailsVC.taskDetails = _taskManager.todo.allPriorities[indexPath.row];
+        [self.navigationController pushViewController: detailsVC animated: YES];
     }
-    DetailsViewController *detailsVC = [self.storyboard instantiateViewControllerWithIdentifier: @"DetailsViewController"];
-    detailsVC.presentAs = DetailsVCEdit;
-    detailsVC.taskDetails = _taskManager.todo.allPriorities[indexPath.row];
-    [self.navigationController pushViewController: detailsVC animated: YES];
 }
 
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if(_taskManager.todo.allPriorities.count == 0){
-        return;
-    }
-    
-    if (editingStyle != UITableViewCellEditingStyleDelete) {
+    if (!_taskManager.todo.allPriorities.isEmpty && editingStyle != UITableViewCellEditingStyleDelete) {
         return;
     }
     
