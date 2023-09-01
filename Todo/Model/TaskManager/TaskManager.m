@@ -26,26 +26,26 @@
 }
 
 - (void) addPriorityToStatus: (Priority*) priority status: (int) status {
-    [priority.all removeAllObjects];
-    [priority.low removeAllObjects];
-    [priority.medium removeAllObjects];
-    [priority.high removeAllObjects];
+    [priority.allPriorities removeAllObjects];
+    [priority.lowPriority removeAllObjects];
+    [priority.mediumPriority removeAllObjects];
+    [priority.highPriority removeAllObjects];
     
     for(Task* task in tasks) {
         if(status != task.status){
             continue;
         }
-        [priority.all addObject: task];
+        [priority.allPriorities addObject: task];
         switch(task.priority) {
             case 0:
-                [priority.low addObject: task];
+                [priority.lowPriority addObject: task];
                 continue;
                 
             case 1:
-                [priority.medium addObject: task];
+                [priority.mediumPriority addObject: task];
                 continue;
             case 2:
-                [priority.high addObject: task];
+                [priority.highPriority addObject: task];
                 continue;
         }
     }

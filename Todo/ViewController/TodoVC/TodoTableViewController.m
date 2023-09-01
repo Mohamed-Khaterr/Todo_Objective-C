@@ -74,13 +74,13 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if((int)_taskManager.todo.all.count == 0){
+    if((int)_taskManager.todo.allPriorities.count == 0){
         return 1;
     }
     if(_isSearching){
         return _searchResult.count == 0 ? 1 : _searchResult.count;
     } else {
-        return _taskManager.todo.all.count;
+        return _taskManager.todo.allPriorities.count;
     }
 }
 
@@ -88,7 +88,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle: UITableViewCellStyleSubtitle reuseIdentifier: @"myCell"];
     
-    if((int)_taskManager.todo.all.count == 0){
+    if((int)_taskManager.todo.allPriorities.count == 0){
         cell.textLabel.text = @"No Taskes in TODOS!";
         return cell;
     }
@@ -104,7 +104,7 @@
         return cell;
     }
     
-    Task *task = _taskManager.todo.all[indexPath.row];
+    Task *task = _taskManager.todo.allPriorities[indexPath.row];
     cell.textLabel.text = task.name;
     
     switch(task.priority) {
@@ -129,19 +129,19 @@
 
 // MARK: - UITableView Delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if((int)_taskManager.todo.all.count == 0){
+    if((int)_taskManager.todo.allPriorities.count == 0){
         [tableView deselectRowAtIndexPath: indexPath animated:YES];
         return;
     }
     DetailsViewController *detailsVC = [self.storyboard instantiateViewControllerWithIdentifier: @"DetailsViewController"];
     detailsVC.perform = DetailsVCEdit;
-    detailsVC.taskDetails = _taskManager.todo.all[indexPath.row];
+    detailsVC.taskDetails = _taskManager.todo.allPriorities[indexPath.row];
     [self.navigationController pushViewController: detailsVC animated: YES];
 }
 
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if((int)_taskManager.todo.all.count == 0){
+    if((int)_taskManager.todo.allPriorities.count == 0){
         return;
     }
     
@@ -149,7 +149,7 @@
         return;
     }
     
-    Task* task = _taskManager.todo.all[indexPath.row];
+    Task* task = _taskManager.todo.allPriorities[indexPath.row];
     
     UIAlertController *alert = [UIAlertController alertControllerWithTitle: @"Delete" message: @"Are you sure to delete!" preferredStyle: UIAlertControllerStyleAlert];
     
@@ -175,7 +175,7 @@
     } else {
         _isSearching = YES;
         NSPredicate *predicate = [NSPredicate predicateWithFormat: @"name CONTAINS[c] %@", searchText];
-        _searchResult = [_taskManager.todo.all filteredArrayUsingPredicate: predicate];
+        _searchResult = [_taskManager.todo.allPriorities filteredArrayUsingPredicate: predicate];
     }
     [self.tableView reloadData];
 }

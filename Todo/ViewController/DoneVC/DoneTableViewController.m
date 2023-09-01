@@ -50,7 +50,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if((int)_taskManager.done.all.count == 0){
+    if((int)_taskManager.done.allPriorities.count == 0){
         return 1;
     }
     
@@ -58,16 +58,16 @@
     if(_isSorted) {
         switch(section) {
             case 0:
-                return _taskManager.done.low.count;
+                return _taskManager.done.lowPriority.count;
             case 1:
-                return _taskManager.done.medium.count;
+                return _taskManager.done.mediumPriority.count;
             case 2:
-                return _taskManager.done.high.count;
+                return _taskManager.done.highPriority.count;
             default:
                 return 0;
         }
     } else {
-        return _taskManager.done.all.count;
+        return _taskManager.done.allPriorities.count;
     }
 }
 
@@ -75,7 +75,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle: UITableViewCellStyleSubtitle reuseIdentifier: @"myCell"];
     
-    if((int)_taskManager.done.all.count == 0){
+    if((int)_taskManager.done.allPriorities.count == 0){
         cell.textLabel.text = @"No Tasks finished!";
         return cell;
     }
@@ -84,13 +84,13 @@
         Task *task;
         switch(indexPath.section) {
             case 0:
-                task = _taskManager.done.low[indexPath.row];
+                task = _taskManager.done.lowPriority[indexPath.row];
                 break;
             case 1:
-                task = _taskManager.done.medium[indexPath.row];
+                task = _taskManager.done.mediumPriority[indexPath.row];
                 break;
             case 2:
-                task = _taskManager.done.high[indexPath.row];
+                task = _taskManager.done.highPriority[indexPath.row];
                 break;
         }
         
@@ -98,7 +98,7 @@
         cell.detailTextLabel.text = task.desc;
         cell.imageView.image = [UIImage systemImageNamed: task.imageName];
     } else {
-        Task *task = _taskManager.done.all[indexPath.row];
+        Task *task = _taskManager.done.allPriorities[indexPath.row];
         cell.textLabel.text = task.name;
         cell.detailTextLabel.text = task.desc;
         cell.imageView.image = [UIImage systemImageNamed: task.imageName];
@@ -111,7 +111,7 @@
 
 // MARK: - UITableView Delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if((int)_taskManager.done.all.count == 0){
+    if((int)_taskManager.done.allPriorities.count == 0){
         [tableView deselectRowAtIndexPath: indexPath animated:YES];
         return;
     }
@@ -121,18 +121,18 @@
     if(_isSorted){
         switch(indexPath.section) {
             case 0:
-                detailsVC.taskDetails = _taskManager.done.low[indexPath.row];
+                detailsVC.taskDetails = _taskManager.done.lowPriority[indexPath.row];
                 break;
             case 1:
-                detailsVC.taskDetails = _taskManager.done.medium[indexPath.row];
+                detailsVC.taskDetails = _taskManager.done.mediumPriority[indexPath.row];
                 break;
             case 2:
-                detailsVC.taskDetails = _taskManager.done.high[indexPath.row];
+                detailsVC.taskDetails = _taskManager.done.highPriority[indexPath.row];
                 break;
         }
         detailsVC.disappleTodo = YES;
     } else {
-        detailsVC.taskDetails = _taskManager.done.all[indexPath.row];
+        detailsVC.taskDetails = _taskManager.done.allPriorities[indexPath.row];
         detailsVC.disappleTodo = YES;
     }
     
@@ -142,7 +142,7 @@
 
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if((int)_taskManager.done.all.count == 0){
+    if((int)_taskManager.done.allPriorities.count == 0){
         [tableView deselectRowAtIndexPath: indexPath animated:YES];
         return;
     }
@@ -158,17 +158,17 @@
         if(self.isSorted){
             switch(indexPath.section){
                 case 0:
-                    [self.taskManager deletaTaskWithUUID: self.taskManager.done.low[indexPath.row].uuid];
+                    [self.taskManager deletaTaskWithUUID: self.taskManager.done.lowPriority[indexPath.row].uuid];
                     break;
                 case 1:
-                    [self.taskManager deletaTaskWithUUID: self.taskManager.done.medium[indexPath.row].uuid];
+                    [self.taskManager deletaTaskWithUUID: self.taskManager.done.mediumPriority[indexPath.row].uuid];
                     break;
                 case 2:
-                    [self.taskManager deletaTaskWithUUID: self.taskManager.done.high[indexPath.row].uuid];
+                    [self.taskManager deletaTaskWithUUID: self.taskManager.done.highPriority[indexPath.row].uuid];
                     break;
             }
         } else {
-            [self.taskManager deletaTaskWithUUID: self.taskManager.done.all[indexPath.row].uuid];
+            [self.taskManager deletaTaskWithUUID: self.taskManager.done.allPriorities[indexPath.row].uuid];
         }
         
         [self.taskManager fetchTasksByStatus: 2];

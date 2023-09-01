@@ -46,23 +46,23 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if((int)_taskManager.inProgress.all.count == 0){
+    if((int)_taskManager.inProgress.allPriorities.count == 0){
         return 1;
     }
     
     if(_isSorted) {
         switch(section) {
             case 0:
-                return _taskManager.inProgress.low.count;
+                return _taskManager.inProgress.lowPriority.count;
             case 1:
-                return _taskManager.inProgress.medium.count;
+                return _taskManager.inProgress.mediumPriority.count;
             case 2:
-                return _taskManager.inProgress.high.count;
+                return _taskManager.inProgress.highPriority.count;
             default:
                 return 0;
         }
     } else {
-        return _taskManager.inProgress.all.count;
+        return _taskManager.inProgress.allPriorities.count;
     }
 }
 
@@ -70,7 +70,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle: UITableViewCellStyleSubtitle reuseIdentifier: @"myCell"];
     
-    if((int)_taskManager.inProgress.all.count == 0){
+    if((int)_taskManager.inProgress.allPriorities.count == 0){
         cell.textLabel.text = @"No Tasks in progress!";
         return cell;
     }
@@ -79,13 +79,13 @@
         Task *task;
         switch(indexPath.section) {
             case 0:
-                task = _taskManager.inProgress.low[indexPath.row];
+                task = _taskManager.inProgress.lowPriority[indexPath.row];
                 break;
             case 1:
-                task = _taskManager.inProgress.medium[indexPath.row];
+                task = _taskManager.inProgress.mediumPriority[indexPath.row];
                 break;
             case 2:
-                task = _taskManager.inProgress.high[indexPath.row];
+                task = _taskManager.inProgress.highPriority[indexPath.row];
                 break;
         }
         
@@ -93,7 +93,7 @@
         cell.detailTextLabel.text = task.desc;
         cell.imageView.image = [UIImage systemImageNamed: task.imageName];
     } else {
-        Task *task = _taskManager.inProgress.all[indexPath.row];
+        Task *task = _taskManager.inProgress.allPriorities[indexPath.row];
         cell.textLabel.text = task.name;
         cell.detailTextLabel.text = task.desc;
         cell.imageView.image = [UIImage systemImageNamed: task.imageName];
@@ -104,7 +104,7 @@
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if((int)_taskManager.inProgress.all.count == 0){
+    if((int)_taskManager.inProgress.allPriorities.count == 0){
         [tableView deselectRowAtIndexPath: indexPath animated:YES];
         return;
     }
@@ -114,18 +114,18 @@
     if(_isSorted){
         switch(indexPath.section) {
             case 0:
-                detailsVC.taskDetails = _taskManager.inProgress.low[indexPath.row];
+                detailsVC.taskDetails = _taskManager.inProgress.lowPriority[indexPath.row];
                 break;
             case 1:
-                detailsVC.taskDetails = _taskManager.inProgress.medium[indexPath.row];
+                detailsVC.taskDetails = _taskManager.inProgress.mediumPriority[indexPath.row];
                 break;
             case 2:
-                detailsVC.taskDetails = _taskManager.inProgress.high[indexPath.row];
+                detailsVC.taskDetails = _taskManager.inProgress.highPriority[indexPath.row];
                 break;
         }
         detailsVC.disappleTodo = YES;
     } else {
-        detailsVC.taskDetails = _taskManager.inProgress.all[indexPath.row];
+        detailsVC.taskDetails = _taskManager.inProgress.allPriorities[indexPath.row];
         detailsVC.disappleTodo = YES;
     }
     
@@ -135,7 +135,7 @@
 
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if((int)_taskManager.inProgress.all.count == 0){
+    if((int)_taskManager.inProgress.allPriorities.count == 0){
         [tableView deselectRowAtIndexPath: indexPath animated:YES];
         return;
     }
@@ -151,17 +151,17 @@
         if(self.isSorted){
             switch(indexPath.section){
                 case 0:
-                    [self.taskManager deletaTaskWithUUID: self.taskManager.inProgress.low[indexPath.row].uuid];
+                    [self.taskManager deletaTaskWithUUID: self.taskManager.inProgress.lowPriority[indexPath.row].uuid];
                     break;
                 case 1:
-                    [self.taskManager deletaTaskWithUUID: self.taskManager.inProgress.medium[indexPath.row].uuid];
+                    [self.taskManager deletaTaskWithUUID: self.taskManager.inProgress.mediumPriority[indexPath.row].uuid];
                     break;
                 case 2:
-                    [self.taskManager deletaTaskWithUUID: self.taskManager.inProgress.high[indexPath.row].uuid];
+                    [self.taskManager deletaTaskWithUUID: self.taskManager.inProgress.highPriority[indexPath.row].uuid];
                     break;
             }
         } else {
-            [self.taskManager deletaTaskWithUUID: self.taskManager.inProgress.all[indexPath.row].uuid];
+            [self.taskManager deletaTaskWithUUID: self.taskManager.inProgress.allPriorities[indexPath.row].uuid];
         }
         [self.taskManager fetchTasksByStatus: 1];
         [self.tableView reloadData];

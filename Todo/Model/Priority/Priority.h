@@ -13,10 +13,10 @@ NS_ASSUME_NONNULL_BEGIN
 @interface Priority : NSObject
 
 // Properties
-@property NSMutableArray<Task*> *all;
-@property NSMutableArray<Task*> *low;
-@property NSMutableArray<Task*> *medium;
-@property NSMutableArray<Task*> *high;
+@property NSMutableArray<Task*> *allPriorities;
+@property NSMutableArray<Task*> *lowPriority;
+@property NSMutableArray<Task*> *mediumPriority;
+@property NSMutableArray<Task*> *highPriority;
 
 
 @end
