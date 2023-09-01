@@ -158,17 +158,17 @@
         if(self.isSorted){
             switch(indexPath.section){
                 case 0:
-                    [self.taskManager deletaTaskWithUUID: self.taskManager.done.lowPriority[indexPath.row].uuid];
+                    [self.taskManager deleteTaskWithUUID: self.taskManager.done.lowPriority[indexPath.row].uuid];
                     break;
                 case 1:
-                    [self.taskManager deletaTaskWithUUID: self.taskManager.done.mediumPriority[indexPath.row].uuid];
+                    [self.taskManager deleteTaskWithUUID: self.taskManager.done.mediumPriority[indexPath.row].uuid];
                     break;
                 case 2:
-                    [self.taskManager deletaTaskWithUUID: self.taskManager.done.highPriority[indexPath.row].uuid];
+                    [self.taskManager deleteTaskWithUUID: self.taskManager.done.highPriority[indexPath.row].uuid];
                     break;
             }
         } else {
-            [self.taskManager deletaTaskWithUUID: self.taskManager.done.allPriorities[indexPath.row].uuid];
+            [self.taskManager deleteTaskWithUUID: self.taskManager.done.allPriorities[indexPath.row].uuid];
         }
         
         [self.taskManager fetchTasksByStatus: 2];

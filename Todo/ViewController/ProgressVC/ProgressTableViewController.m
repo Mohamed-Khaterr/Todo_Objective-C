@@ -151,17 +151,17 @@
         if(self.isSorted){
             switch(indexPath.section){
                 case 0:
-                    [self.taskManager deletaTaskWithUUID: self.taskManager.inProgress.lowPriority[indexPath.row].uuid];
+                    [self.taskManager deleteTaskWithUUID: self.taskManager.inProgress.lowPriority[indexPath.row].uuid];
                     break;
                 case 1:
-                    [self.taskManager deletaTaskWithUUID: self.taskManager.inProgress.mediumPriority[indexPath.row].uuid];
+                    [self.taskManager deleteTaskWithUUID: self.taskManager.inProgress.mediumPriority[indexPath.row].uuid];
                     break;
                 case 2:
-                    [self.taskManager deletaTaskWithUUID: self.taskManager.inProgress.highPriority[indexPath.row].uuid];
+                    [self.taskManager deleteTaskWithUUID: self.taskManager.inProgress.highPriority[indexPath.row].uuid];
                     break;
             }
         } else {
-            [self.taskManager deletaTaskWithUUID: self.taskManager.inProgress.allPriorities[indexPath.row].uuid];
+            [self.taskManager deleteTaskWithUUID: self.taskManager.inProgress.allPriorities[indexPath.row].uuid];
         }
         [self.taskManager fetchTasksByStatus: 1];
         [self.tableView reloadData];

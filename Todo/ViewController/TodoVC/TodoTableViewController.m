@@ -155,7 +155,7 @@
     
     UIAlertAction *cancelButton = [UIAlertAction actionWithTitle: @"Cancel" style: UIAlertActionStyleCancel handler:nil];
     UIAlertAction *deleteButton = [UIAlertAction actionWithTitle: @"Delete" style: UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-        [self.taskManager deletaTaskWithUUID: task.uuid];
+        [self.taskManager deleteTaskWithUUID: task.uuid];
         [self.taskManager fetchTasksByStatus: 0];
         [self.tableView reloadData];
     }];

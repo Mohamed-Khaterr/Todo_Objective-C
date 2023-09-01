@@ -11,10 +11,10 @@
 
 - (id) init {
     self = [super init];
-    _allPriorities = [NSMutableArray new];
-    _lowPriority = [NSMutableArray new];
-    _mediumPriority = [NSMutableArray new];
-    _highPriority = [NSMutableArray new];
+    _allPriorities = [NSArray new];
+    _lowPriority = [NSArray new];
+    _mediumPriority = [NSArray new];
+    _highPriority = [NSArray new];
     return self;
 }
 

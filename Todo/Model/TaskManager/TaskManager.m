@@ -10,49 +10,6 @@
 @implementation TaskManager
 
 
-// MARK: - Private
-- (void) save {
-    NSData *tasksData = [NSKeyedArchiver archivedDataWithRootObject: tasks];
-    [userDefaults setObject: tasksData forKey: @"tasks"];
-}
-
-- (void) retrieve {
-    [tasks removeAllObjects];
-    NSData *tasksData = [userDefaults objectForKey: @"tasks"];
-    tasks = [NSKeyedUnarchiver unarchiveObjectWithData: tasksData];
-    if(tasks == nil) {
-        tasks = [NSMutableArray new];
-    }
-}
-
-- (void) addPriorityToStatus: (Priority*) priority status: (int) status {
-    [priority.allPriorities removeAllObjects];
-    [priority.lowPriority removeAllObjects];
-    [priority.mediumPriority removeAllObjects];
-    [priority.highPriority removeAllObjects];
-    
-    for(Task* task in tasks) {
-        if(status != task.status){
-            continue;
-        }
-        [priority.allPriorities addObject: task];
-        switch(task.priority) {
-            case 0:
-                [priority.lowPriority addObject: task];
-                continue;
-                
-            case 1:
-                [priority.mediumPriority addObject: task];
-                continue;
-            case 2:
-                [priority.highPriority addObject: task];
-                continue;
-        }
-    }
-}
-
-
-// MARK: - Public
 -(id) init {
     self = [super init];
     userDefaults = [NSUserDefaults standardUserDefaults];
@@ -65,58 +22,121 @@
 
 
 
+// MARK: - Private
+- (void) save {
+    NSData *tasksData = [NSKeyedArchiver archivedDataWithRootObject: tasks requiringSecureCoding: NO error: nil];
+    [userDefaults setObject: tasksData forKey: @"tasks"];
+}
+
+- (void) retrieve {
+    [tasks removeAllObjects];
+    NSData *tasksData = [userDefaults objectForKey: @"tasks"];
+    tasks = [NSKeyedUnarchiver unarchiveObjectWithData: tasksData];
+    if(tasks == nil) {
+        tasks = [NSMutableArray new];
+    }
+}
+
+- (void) setPrioritiesToTodos {
+    // NSArray have Copy Constructor | But NSMuttable doesn't have one
+    NSPredicate *allPriorityPredicate = [NSPredicate predicateWithFormat: @"status == 0"];
+    _todo.allPriorities = [tasks filteredArrayUsingPredicate: allPriorityPredicate];
+    
+    NSPredicate *lowPriorityPredicate = [NSPredicate predicateWithFormat: @"status == 0 && priority == 0"];
+    _todo.lowPriority = [tasks filteredArrayUsingPredicate: lowPriorityPredicate];
+    
+    NSPredicate *mediumPriorityPredicate = [NSPredicate predicateWithFormat: @"status == 0 && priority == 1"];
+    _todo.mediumPriority = [tasks filteredArrayUsingPredicate: mediumPriorityPredicate];
+    
+    NSPredicate *highPriorityPredicate = [NSPredicate predicateWithFormat: @"status == 0 && priority == 2"];
+    _todo.highPriority = [tasks filteredArrayUsingPredicate: highPriorityPredicate];
+}
+
+- (void) setPrioritiesToInProgress {
+    // NSArray have Copy Constructor | But NSMuttable doesn't have one
+    NSPredicate *allPriorityPredicate = [NSPredicate predicateWithFormat: @"status == 1"];
+    _inProgress.allPriorities = [tasks filteredArrayUsingPredicate: allPriorityPredicate];
+    
+    NSPredicate *lowPriorityPredicate = [NSPredicate predicateWithFormat: @"status == 1 && priority == 0"];
+    _inProgress.lowPriority = [tasks filteredArrayUsingPredicate: lowPriorityPredicate];
+    
+    NSPredicate *mediumPriorityPredicate = [NSPredicate predicateWithFormat: @"status == 1 && priority == 1"];
+    _inProgress.mediumPriority = [tasks filteredArrayUsingPredicate: mediumPriorityPredicate];
+    
+    NSPredicate *highPriorityPredicate = [NSPredicate predicateWithFormat: @"status == 1 && priority == 2"];
+    _inProgress.highPriority = [tasks filteredArrayUsingPredicate: highPriorityPredicate];
+}
+
+- (void) setPrioritiesToDone {
+    // NSArray have Copy Constructor | But NSMuttable doesn't have one
+    NSPredicate *allPriorityPredicate = [NSPredicate predicateWithFormat: @"status == 2"];
+    _done.allPriorities = [tasks filteredArrayUsingPredicate: allPriorityPredicate];
+    
+    NSPredicate *lowPriorityPredicate = [NSPredicate predicateWithFormat: @"status == 2 && priority == 0"];
+    _done.lowPriority = [tasks filteredArrayUsingPredicate: lowPriorityPredicate];
+    
+    NSPredicate *mediumPriorityPredicate = [NSPredicate predicateWithFormat: @"status == 2 && priority == 1"];
+    _done.mediumPriority = [tasks filteredArrayUsingPredicate: mediumPriorityPredicate];
+    
+    NSPredicate *highPriorityPredicate = [NSPredicate predicateWithFormat: @"status == 2 && priority == 2"];
+    _done.highPriority = [tasks filteredArrayUsingPredicate: highPriorityPredicate];
+}
+
+
+// MARK: - Public
 - (void) fetchTasksByStatus: (int) status {
     [self retrieve];
     
     switch(status) {
         case 0:
-            [self addPriorityToStatus: _todo status: status];
+            [self setPrioritiesToTodos];
             break;
         case 1:
-            [self addPriorityToStatus: _inProgress status: status];
+            [self setPrioritiesToInProgress];
             break;
         case 2:
-            [self addPriorityToStatus: _done status: status];
+            [self setPrioritiesToDone];
             break;
     }
 }
 
 - (void) insertTask: (Task*) task {
     [self retrieve];
-//    NSLog(@"insertTask: %@", task);
     [tasks addObject: task];
     [self save];
 }
 
 - (void) updateTask: (Task*) task {
     [self retrieve];
-    int i = 0;
     
-    for(Task* temp in tasks) {
-        if([temp.uuid isEqual: task.uuid]){
-            break;
-        }
-        i++;
+    // Find index of Object
+    NSUInteger index = [tasks indexOfObjectPassingTest:^BOOL(Task * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        return [obj.uuid isEqual: task.uuid];
+    }];
+    
+    if(index == NSNotFound){
+        return;
     }
     
-    if(i < tasks.count){
-    }
+    // Replace old task with updated task in tasks Array
+    [tasks replaceObjectAtIndex: index withObject: task];
     
-    [tasks replaceObjectAtIndex: i withObject: task];
     [self save];
 }
 
-- (void) deletaTaskWithUUID: (NSString*) uuid {
+- (void) deleteTaskWithUUID: (NSString*) uuid {
     [self retrieve];
-    int i = 0;
-    for(Task* task in tasks) {
-        if([task.uuid isEqual: uuid]){
-            break;
-        }
-        i++;
+    
+    // Find index of Object
+    NSUInteger index = [tasks indexOfObjectPassingTest:^BOOL(Task * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        return [obj.uuid isEqual: uuid];
+    }];
+    
+    if(index == NSNotFound){
+        return;
     }
     
-    [tasks removeObjectAtIndex: i];
+    [tasks removeObjectAtIndex: index];
     [self save];
 }
 

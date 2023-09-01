@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void) fetchTasksByStatus: (int) status;
 - (void) insertTask: (Task*) task;
 - (void) updateTask: (Task*) task;
-- (void) deletaTaskWithUUID: (NSString*) uuid;
+- (void) deleteTaskWithUUID: (NSString*) uuid;
 
 @end
 
