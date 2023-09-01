@@ -7,6 +7,15 @@
 
 #import "TaskManager.h"
 
+/*
+    Problem To Fix:
+    - Need to know when NSKeyedArchiver is Finished
+    - Need to know when data is successfully saved
+    
+    Why:
+    - if user is create a task then leave the screen before finishing Archive and saving data then it will be no data to show
+ */
+
 @implementation TaskManager
 
 
@@ -24,8 +33,13 @@
 
 // MARK: - Private
 - (void) save {
-    NSData *tasksData = [NSKeyedArchiver archivedDataWithRootObject: tasks requiringSecureCoding: NO error: nil];
+    NSError *error;
+    NSData *tasksData = [NSKeyedArchiver archivedDataWithRootObject: tasks requiringSecureCoding: NO error: &error];
     [userDefaults setObject: tasksData forKey: @"tasks"];
+    
+    if(error != nil){
+        NSLog(@"Error %@", error.localizedDescription);
+    }
 }
 
 - (void) retrieve {
@@ -37,49 +51,19 @@
     }
 }
 
-- (void) setPrioritiesToTodos {
+- (void) setPrioritiesFor: (Priority*) priority withStatus: (int) status {
     // NSArray have Copy Constructor | But NSMuttable doesn't have one
-    NSPredicate *allPriorityPredicate = [NSPredicate predicateWithFormat: @"status == 0"];
-    _todo.allPriorities = [tasks filteredArrayUsingPredicate: allPriorityPredicate];
+    NSPredicate *allPriorityPredicate = [NSPredicate predicateWithFormat: @"status == %d", status];
+    priority.allPriorities = [tasks filteredArrayUsingPredicate: allPriorityPredicate];
     
-    NSPredicate *lowPriorityPredicate = [NSPredicate predicateWithFormat: @"status == 0 && priority == 0"];
-    _todo.lowPriority = [tasks filteredArrayUsingPredicate: lowPriorityPredicate];
+    NSPredicate *lowPriorityPredicate = [NSPredicate predicateWithFormat: @"status == %d && priority == 0", status];
+    priority.lowPriority = [tasks filteredArrayUsingPredicate: lowPriorityPredicate];
     
-    NSPredicate *mediumPriorityPredicate = [NSPredicate predicateWithFormat: @"status == 0 && priority == 1"];
-    _todo.mediumPriority = [tasks filteredArrayUsingPredicate: mediumPriorityPredicate];
+    NSPredicate *mediumPriorityPredicate = [NSPredicate predicateWithFormat: @"status == %d && priority == 1", status];
+    priority.mediumPriority = [tasks filteredArrayUsingPredicate: mediumPriorityPredicate];
     
-    NSPredicate *highPriorityPredicate = [NSPredicate predicateWithFormat: @"status == 0 && priority == 2"];
-    _todo.highPriority = [tasks filteredArrayUsingPredicate: highPriorityPredicate];
-}
-
-- (void) setPrioritiesToInProgress {
-    // NSArray have Copy Constructor | But NSMuttable doesn't have one
-    NSPredicate *allPriorityPredicate = [NSPredicate predicateWithFormat: @"status == 1"];
-    _inProgress.allPriorities = [tasks filteredArrayUsingPredicate: allPriorityPredicate];
-    
-    NSPredicate *lowPriorityPredicate = [NSPredicate predicateWithFormat: @"status == 1 && priority == 0"];
-    _inProgress.lowPriority = [tasks filteredArrayUsingPredicate: lowPriorityPredicate];
-    
-    NSPredicate *mediumPriorityPredicate = [NSPredicate predicateWithFormat: @"status == 1 && priority == 1"];
-    _inProgress.mediumPriority = [tasks filteredArrayUsingPredicate: mediumPriorityPredicate];
-    
-    NSPredicate *highPriorityPredicate = [NSPredicate predicateWithFormat: @"status == 1 && priority == 2"];
-    _inProgress.highPriority = [tasks filteredArrayUsingPredicate: highPriorityPredicate];
-}
-
-- (void) setPrioritiesToDone {
-    // NSArray have Copy Constructor | But NSMuttable doesn't have one
-    NSPredicate *allPriorityPredicate = [NSPredicate predicateWithFormat: @"status == 2"];
-    _done.allPriorities = [tasks filteredArrayUsingPredicate: allPriorityPredicate];
-    
-    NSPredicate *lowPriorityPredicate = [NSPredicate predicateWithFormat: @"status == 2 && priority == 0"];
-    _done.lowPriority = [tasks filteredArrayUsingPredicate: lowPriorityPredicate];
-    
-    NSPredicate *mediumPriorityPredicate = [NSPredicate predicateWithFormat: @"status == 2 && priority == 1"];
-    _done.mediumPriority = [tasks filteredArrayUsingPredicate: mediumPriorityPredicate];
-    
-    NSPredicate *highPriorityPredicate = [NSPredicate predicateWithFormat: @"status == 2 && priority == 2"];
-    _done.highPriority = [tasks filteredArrayUsingPredicate: highPriorityPredicate];
+    NSPredicate *highPriorityPredicate = [NSPredicate predicateWithFormat: @"status == %d && priority == 2", status];
+    priority.highPriority = [tasks filteredArrayUsingPredicate: highPriorityPredicate];
 }
 
 
@@ -89,13 +73,13 @@
     
     switch(status) {
         case 0:
-            [self setPrioritiesToTodos];
+            [self setPrioritiesFor: _todo withStatus: 0];
             break;
         case 1:
-            [self setPrioritiesToInProgress];
+            [self setPrioritiesFor: _inProgress withStatus: 1];
             break;
         case 2:
-            [self setPrioritiesToDone];
+            [self setPrioritiesFor: _done withStatus: 2];
             break;
     }
 }
