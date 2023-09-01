@@ -8,6 +8,7 @@
 #import "DoneTableViewController.h"
 #import "DetailsViewController.h"
 #import "TaskManager.h"
+#import "NSArray+EmptyArray.h"
 
 @interface DoneTableViewController ()
 
@@ -50,7 +51,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if(_taskManager.done.allPriorities.count == 0){
+    if(_taskManager.done.allPriorities.isEmpty){
         return 1;
     }
     
@@ -75,7 +76,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle: UITableViewCellStyleSubtitle reuseIdentifier: @"myCell"];
     
-    if(_taskManager.done.allPriorities.count == 0){
+    if(_taskManager.done.allPriorities.isEmpty){
         cell.textLabel.text = @"No Tasks finished!";
         return cell;
     }
@@ -111,7 +112,7 @@
 
 // MARK: - UITableView Delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if(_taskManager.done.allPriorities.count == 0){
+    if(_taskManager.done.allPriorities.isEmpty){
         [tableView deselectRowAtIndexPath: indexPath animated:YES];
         return;
     }
@@ -137,17 +138,11 @@
     }
     
     [self.navigationController pushViewController: detailsVC animated: YES];
-    [tableView deselectRowAtIndexPath: indexPath animated: YES];
 }
 
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if(_taskManager.done.allPriorities.count == 0){
-        [tableView deselectRowAtIndexPath: indexPath animated:YES];
-        return;
-    }
-    
-    if (editingStyle != UITableViewCellEditingStyleDelete) {
+    if (!_taskManager.done.allPriorities.isEmpty && editingStyle != UITableViewCellEditingStyleDelete) {
         return;
     }
     
@@ -184,24 +179,24 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if(!_isSorted) {
+        switch (section) {
+            case 0:
+                return @"Low";
+                break;
+                
+            case 1:
+                return @"Medium";
+                break;
+                
+            case 2:
+                return @"High";
+                break;
+                
+            default:
+                return @"";
+        }
+    } else {
         return @"";
-    }
-    
-    switch (section) {
-        case 0:
-            return @"Low";
-            break;
-            
-        case 1:
-            return @"Medium";
-            break;
-            
-        case 2:
-            return @"High";
-            break;
-            
-        default:
-            return @"";
     }
 }
 
