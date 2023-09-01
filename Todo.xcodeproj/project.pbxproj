@@ -20,6 +20,7 @@
 		0147A1012A9F2ED0004279E0 /* Task.m in Sources */ = {isa = PBXBuildFile; fileRef = 0147A1002A9F2ED0004279E0 /* Task.m */; };
 		016CEB592A9FA1DB00FFA58C /* TaskManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 016CEB582A9FA1DB00FFA58C /* TaskManager.m */; };
 		016CEB602A9FA3B400FFA58C /* Priority.m in Sources */ = {isa = PBXBuildFile; fileRef = 016CEB5F2A9FA3B400FFA58C /* Priority.m */; };
+		017EFF482AA296E20019C423 /* NSArray+EmptyArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 017EFF472AA296E20019C423 /* NSArray+EmptyArray.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +48,8 @@
 		016CEB582A9FA1DB00FFA58C /* TaskManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TaskManager.m; sourceTree = "<group>"; };
 		016CEB5E2A9FA3B400FFA58C /* Priority.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Priority.h; sourceTree = "<group>"; };
 		016CEB5F2A9FA3B400FFA58C /* Priority.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Priority.m; sourceTree = "<group>"; };
+		017EFF462AA296E20019C423 /* NSArray+EmptyArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSArray+EmptyArray.h"; sourceTree = "<group>"; };
+		017EFF472AA296E20019C423 /* NSArray+EmptyArray.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSArray+EmptyArray.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +85,7 @@
 				0147A0DD2A9F1F1A004279E0 /* Assets.xcassets */,
 				0147A0E22A9F1F1A004279E0 /* Info.plist */,
 				0147A0FE2A9F2EB3004279E0 /* Core */,
+				017EFF492AA2986A0019C423 /* Categories */,
 				0147A1022A9F2ED6004279E0 /* Model */,
 				0147A0EA2A9F2152004279E0 /* ViewController */,
 				016CEB552A9F8DEA00FFA58C /* View */,
@@ -194,6 +198,23 @@
 			path = Priority;
 			sourceTree = "<group>";
 		};
+		017EFF492AA2986A0019C423 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				017EFF4A2AA298750019C423 /* NSArray */,
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
+		017EFF4A2AA298750019C423 /* NSArray */ = {
+			isa = PBXGroup;
+			children = (
+				017EFF462AA296E20019C423 /* NSArray+EmptyArray.h */,
+				017EFF472AA296E20019C423 /* NSArray+EmptyArray.m */,
+			);
+			path = NSArray;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -268,6 +289,7 @@
 				0147A0D32A9F1F19004279E0 /* AppDelegate.m in Sources */,
 				016CEB592A9FA1DB00FFA58C /* TaskManager.m in Sources */,
 				0147A0E42A9F1F1A004279E0 /* main.m in Sources */,
+				017EFF482AA296E20019C423 /* NSArray+EmptyArray.m in Sources */,
 				0147A0EF2A9F217E004279E0 /* TodoTableViewController.m in Sources */,
 				0147A1012A9F2ED0004279E0 /* Task.m in Sources */,
 				016CEB602A9FA3B400FFA58C /* Priority.m in Sources */,
