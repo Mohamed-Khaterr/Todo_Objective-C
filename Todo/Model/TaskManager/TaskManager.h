@@ -20,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property Priority *done;
 
 
-- (void) fetchTasksByStatus: (int) status;
+- (void) fetchTasksWithStatusEqualTo: (int) status;
 - (void) insertTask: (Task*) task;
 - (void) updateTask: (Task*) task;
 - (void) deleteTaskWithUUID: (NSString*) uuid;

@@ -84,7 +84,7 @@
 
 
 // MARK: - Public
-- (void) fetchTasksByStatus: (int) status {
+- (void) fetchTasksWithStatusEqualTo: (int) status {
     [self retrieve];
     
     switch(status) {

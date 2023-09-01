@@ -41,7 +41,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
-    [_taskManager fetchTasksByStatus: 0];
+    [_taskManager fetchTasksWithStatusEqualTo: 0];
     [self.tableView reloadData];
 }
 
@@ -156,7 +156,7 @@
     UIAlertAction *cancelButton = [UIAlertAction actionWithTitle: @"Cancel" style: UIAlertActionStyleCancel handler:nil];
     UIAlertAction *deleteButton = [UIAlertAction actionWithTitle: @"Delete" style: UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         [self.taskManager deleteTaskWithUUID: task.uuid];
-        [self.taskManager fetchTasksByStatus: 0];
+        [self.taskManager fetchTasksWithStatusEqualTo: 0];
         [self.tableView reloadData];
     }];
     
@@ -170,7 +170,7 @@
 // MARK: - SearchBar Delegate
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if([searchText isEqual: @""]) {
-        [_taskManager fetchTasksByStatus: 0];
+        [_taskManager fetchTasksWithStatusEqualTo: 0];
         _isSearching = NO;
     } else {
         _isSearching = YES;
@@ -191,7 +191,7 @@
     [searchBar.searchTextField endEditing: YES];
     _isSearching = NO;
     searchBar.searchTextField.text = @"";
-    [_taskManager fetchTasksByStatus: 0];
+    [_taskManager fetchTasksWithStatusEqualTo: 0];
     [self.tableView reloadData];
 }
 

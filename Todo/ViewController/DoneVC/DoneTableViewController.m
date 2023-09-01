@@ -31,7 +31,7 @@
 }
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
-    [_taskManager fetchTasksByStatus: 2];
+    [_taskManager fetchTasksWithStatusEqualTo: 2];
     [self.tableView reloadData];
 }
 
@@ -171,7 +171,7 @@
             [self.taskManager deleteTaskWithUUID: self.taskManager.done.allPriorities[indexPath.row].uuid];
         }
         
-        [self.taskManager fetchTasksByStatus: 2];
+        [self.taskManager fetchTasksWithStatusEqualTo: 2];
         [self.tableView reloadData];
     }];
     
