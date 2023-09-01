@@ -61,7 +61,7 @@
 // MARK: - BarbuttonItem
 - (void) plusBarButtonPressed {
     DetailsViewController *detailsVC = [self.storyboard instantiateViewControllerWithIdentifier: @"DetailsViewController"];
-    detailsVC.perform = DetailsVCAdd;
+    detailsVC.presentAs = DetailsVCAdd;
     [self.navigationController pushViewController: detailsVC animated: YES];
 }
 
@@ -74,7 +74,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if((int)_taskManager.todo.allPriorities.count == 0){
+    if(_taskManager.todo.allPriorities.count == 0){
         return 1;
     }
     if(_isSearching){
@@ -88,7 +88,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle: UITableViewCellStyleSubtitle reuseIdentifier: @"myCell"];
     
-    if((int)_taskManager.todo.allPriorities.count == 0){
+    if(_taskManager.todo.allPriorities.count == 0){
         cell.textLabel.text = @"No Taskes in TODOS!";
         return cell;
     }
@@ -129,19 +129,19 @@
 
 // MARK: - UITableView Delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if((int)_taskManager.todo.allPriorities.count == 0){
+    if(_taskManager.todo.allPriorities.count == 0){
         [tableView deselectRowAtIndexPath: indexPath animated:YES];
         return;
     }
     DetailsViewController *detailsVC = [self.storyboard instantiateViewControllerWithIdentifier: @"DetailsViewController"];
-    detailsVC.perform = DetailsVCEdit;
+    detailsVC.presentAs = DetailsVCEdit;
     detailsVC.taskDetails = _taskManager.todo.allPriorities[indexPath.row];
     [self.navigationController pushViewController: detailsVC animated: YES];
 }
 
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if((int)_taskManager.todo.allPriorities.count == 0){
+    if(_taskManager.todo.allPriorities.count == 0){
         return;
     }
     

@@ -30,7 +30,7 @@
     _taskManagerUpdate = [TaskManager new];
     
     
-    switch(_perform) {
+    switch(_presentAs) {
         case DetailsVCAdd:
             self.title = @"Add";
             break;
@@ -48,7 +48,7 @@
 
 // MARK: - SaveButton
 - (IBAction)saveButtonPressed:(id)sender {
-    switch(_perform) {
+    switch(_presentAs) {
         case DetailsVCAdd:
             [self addTask];
             break;

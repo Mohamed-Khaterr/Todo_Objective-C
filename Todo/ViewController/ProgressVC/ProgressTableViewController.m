@@ -46,7 +46,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if((int)_taskManager.inProgress.allPriorities.count == 0){
+    if(_taskManager.inProgress.allPriorities.count == 0){
         return 1;
     }
     
@@ -70,7 +70,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle: UITableViewCellStyleSubtitle reuseIdentifier: @"myCell"];
     
-    if((int)_taskManager.inProgress.allPriorities.count == 0){
+    if(_taskManager.inProgress.allPriorities.count == 0){
         cell.textLabel.text = @"No Tasks in progress!";
         return cell;
     }
@@ -104,13 +104,13 @@
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if((int)_taskManager.inProgress.allPriorities.count == 0){
+    if(_taskManager.inProgress.allPriorities.count == 0){
         [tableView deselectRowAtIndexPath: indexPath animated:YES];
         return;
     }
     
     DetailsViewController *detailsVC = [self.storyboard instantiateViewControllerWithIdentifier: @"DetailsViewController"];
-    detailsVC.perform = DetailsVCEdit;
+    detailsVC.presentAs = DetailsVCEdit;
     if(_isSorted){
         switch(indexPath.section) {
             case 0:
@@ -135,7 +135,7 @@
 
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if((int)_taskManager.inProgress.allPriorities.count == 0){
+    if(_taskManager.inProgress.allPriorities.count == 0){
         [tableView deselectRowAtIndexPath: indexPath animated:YES];
         return;
     }

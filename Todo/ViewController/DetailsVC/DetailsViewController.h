@@ -18,7 +18,7 @@ typedef enum {
 
 @interface DetailsViewController : UIViewController
 
-@property DETAILS perform;
+@property DETAILS presentAs;
 @property Task *taskDetails;
 @property bool disappleTodo;
 
