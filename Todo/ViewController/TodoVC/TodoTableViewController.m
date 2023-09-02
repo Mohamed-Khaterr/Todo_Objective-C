@@ -86,37 +86,39 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle: UITableViewCellStyleSubtitle reuseIdentifier: @"myCell"];
     
+    Task *task;
+    
     if(_isSearching){
         if(_searchResult.isEmpty){
             cell.textLabel.text = @"No Results!";
+            return cell;
         } else {
-            cell.textLabel.text = _searchResult[indexPath.row].name;
-            cell.detailTextLabel.text = _searchResult[indexPath.row].desc;
-            cell.imageView.image = [UIImage systemImageNamed: _searchResult[indexPath.row].imageName];
+            task = _searchResult[indexPath.row];
         }
     } else {
         if(_taskManager.todo.allPriorities.isEmpty){
             cell.textLabel.text = @"No Taskes in TODOS!";
+            return cell;
         } else {
-            Task *task = _taskManager.todo.allPriorities[indexPath.row];
-            
-            switch(task.priority) {
-                case 0:
-                    cell.textLabel.textColor = [UIColor systemGreenColor];
-                    break;
-                case 1:
-                    cell.textLabel.textColor = [UIColor blueColor];
-                    break;
-                    
-                case 2:
-                    cell.textLabel.textColor = [UIColor redColor];
-            }
-            
-            cell.textLabel.text = task.name;
-            cell.detailTextLabel.text = task.desc;
-            cell.imageView.image = [UIImage systemImageNamed: task.imageName];
+             task = _taskManager.todo.allPriorities[indexPath.row];
         }
     }
+    
+    switch(task.priority) {
+        case 0:
+            cell.imageView.tintColor = [UIColor systemGreenColor];
+            break;
+        case 1:
+            cell.imageView.tintColor = [UIColor blueColor];
+            break;
+            
+        case 2:
+            cell.imageView.tintColor = [UIColor redColor];
+    }
+    
+    cell.textLabel.text = task.name;
+    cell.detailTextLabel.text = task.desc;
+    cell.imageView.image = [UIImage systemImageNamed: task.imageName];
     
     return cell;
 }

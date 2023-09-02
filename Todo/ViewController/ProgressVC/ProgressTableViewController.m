@@ -89,16 +89,24 @@
                 task = _taskManager.inProgress.highPriority[indexPath.row];
                 break;
         }
-        
-        cell.textLabel.text = task.name;
-        cell.detailTextLabel.text = task.desc;
-        cell.imageView.image = [UIImage systemImageNamed: task.imageName];
     } else {
-        
         task = _taskManager.inProgress.allPriorities[indexPath.row];
-        cell.textLabel.text = task.name;
-        cell.detailTextLabel.text = task.desc;
-        cell.imageView.image = [UIImage systemImageNamed: task.imageName];
+    }
+    
+    cell.textLabel.text = task.name;
+    cell.detailTextLabel.text = task.desc;
+    cell.imageView.image = [UIImage systemImageNamed: task.imageName];
+    
+    switch(task.priority) {
+        case 0:
+            cell.imageView.tintColor = [UIColor systemGreenColor];
+            break;
+        case 1:
+            cell.imageView.tintColor = [UIColor blueColor];
+            break;
+            
+        case 2:
+            cell.imageView.tintColor = [UIColor redColor];
     }
     
     return cell;

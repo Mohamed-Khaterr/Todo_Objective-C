@@ -81,8 +81,9 @@
         return cell;
     }
     
+    Task *task;
+    
     if(_isSorted){
-        Task *task;
         switch(indexPath.section) {
             case 0:
                 task = _taskManager.done.lowPriority[indexPath.row];
@@ -94,15 +95,24 @@
                 task = _taskManager.done.highPriority[indexPath.row];
                 break;
         }
-        
-        cell.textLabel.text = task.name;
-        cell.detailTextLabel.text = task.desc;
-        cell.imageView.image = [UIImage systemImageNamed: task.imageName];
     } else {
-        Task *task = _taskManager.done.allPriorities[indexPath.row];
-        cell.textLabel.text = task.name;
-        cell.detailTextLabel.text = task.desc;
-        cell.imageView.image = [UIImage systemImageNamed: task.imageName];
+        task = _taskManager.done.allPriorities[indexPath.row];
+    }
+    
+    cell.textLabel.text = task.name;
+    cell.detailTextLabel.text = task.desc;
+    cell.imageView.image = [UIImage systemImageNamed: task.imageName];
+    
+    switch(task.priority) {
+        case 0:
+            cell.imageView.tintColor = [UIColor systemGreenColor];
+            break;
+        case 1:
+            cell.imageView.tintColor = [UIColor blueColor];
+            break;
+            
+        case 2:
+            cell.imageView.tintColor = [UIColor redColor];
     }
     
     return cell;
@@ -178,7 +188,7 @@
 
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    if(!_isSorted) {
+    if(_isSorted) {
         switch (section) {
             case 0:
                 return @"Low";
