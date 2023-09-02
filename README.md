@@ -12,11 +12,11 @@
 
 <!-- Main Screenshot -->
 <p>
-    <img src="Panorama/Hotpot 0.png" width="19%" />
-    <img src="Panorama/Hotpot 1.png" width="19%" />
-    <img src="Panorama/Hotpot 2.png" width="19%" />
-    <img src="Panorama/Hotpot 3.png" width="19%" />
-    <img src="Panorama/Hotpot 4.png" width="19%" />
+    <img src="Mockups/Hotpot 0.png" width="19%" />
+    <img src="Mockups/Hotpot 1.png" width="19%" />
+    <img src="Mockups/Hotpot 2.png" width="19%" />
+    <img src="Mockups/Hotpot 3.png" width="19%" />
+    <img src="Mockups/Hotpot 4.png" width="19%" />
 </p>
 
 
